@@ -1,15 +1,14 @@
-# Temenos
+# Temenos 👾
 
-A lightweight, cross-platform CLI security tool for mapping an organization's attack surface using DNSDumpster and VirusTotal APIs.
+Temenos is a lightweight, cross-platform CLI security tool for mapping an organization's attack surface using the DNSDumpster and VirusTotal APIs.
 
 ## Features
 
-- 🔍 **DNS Enumeration**: Discover subdomains, DNS records, and network infrastructure using DNSDumpster
-- 🛡️ **Threat Intelligence**: Enrich findings with VirusTotal reputation data
-- 📊 **Multiple Output Formats**: JSON, CSV, and formatted table output
-- 🚀 **Cross-Platform**: Works on Linux, macOS, and Windows
-- ⚡ **Rate Limit Handling**: Automatic rate limit management for both APIs
-- 🔐 **Secure Configuration**: Store API keys securely in a config file or environment variables
+- 🕵️‍♂️ **DNS Enumeration**: Discover subdomains, DNS records, and network infrastructure using DNSDumpster
+- 🛡️ **VT Threat Intelligence**: Enrich findings with VirusTotal reputation data
+- 📑 **Multiple Output Formats**: JSON, CSV, and formatted table output
+- 💻 **Cross-Platform**: Works on Linux, macOS, and Windows
+- </> **Rate Limit Handling**: Automatic rate limit management for both APIs
 
 ## Installation
 
