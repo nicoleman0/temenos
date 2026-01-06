@@ -23,7 +23,7 @@ class VirusTotalClient:
         self.session = requests.Session()
         self.session.headers.update({
             'x-apikey': self.api_key,
-            'User-Agent': 'AttackSurfaceMapper/1.0'
+            'User-Agent': 'Temenos/1.0'
         })
 
     def _wait_for_rate_limit(self):

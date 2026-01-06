@@ -1,4 +1,4 @@
-# Attack Surface Mapper
+# Temenos
 
 A lightweight, cross-platform CLI security tool for mapping an organization's attack surface using DNSDumpster and VirusTotal APIs.
 
@@ -44,31 +44,31 @@ VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
 ### Basic Domain Scan
 
 ```bash
-python attack_surface_mapper.py scan example.com
+python temenos.py scan example.com
 ```
 
 ### Full Scan with VirusTotal Enrichment
 
 ```bash
-python attack_surface_mapper.py scan example.com --virustotal
+python temenos.py scan example.com --virustotal
 ```
 
 ### Output to JSON
 
 ```bash
-python attack_surface_mapper.py scan example.com --output results.json --format json
+python temenos.py scan example.com --output results.json --format json
 ```
 
 ### Output to CSV
 
 ```bash
-python attack_surface_mapper.py scan example.com --output results.csv --format csv
+python temenos.py scan example.com --output results.csv --format csv
 ```
 
 ### Verbose Output
 
 ```bash
-python attack_surface_mapper.py scan example.com --verbose
+python temenos.py scan example.com --verbose
 ```
 
 ## API Rate Limits
@@ -98,8 +98,8 @@ The tool provides:
 ## Project Structure
 
 ```
-attack_surface_mapper/
-├── attack_surface_mapper.py    # Main CLI entry point
+temenos/
+├── temenos.py                  # Main CLI entry point
 ├── clients/
 │   ├── __init__.py
 │   ├── dnsdumpster.py          # DNSDumpster API client

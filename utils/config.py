@@ -1,4 +1,4 @@
-"""Configuration management for Attack Surface Mapper."""
+"""Configuration management for Temenos."""
 import os
 from pathlib import Path
 from dotenv import load_dotenv

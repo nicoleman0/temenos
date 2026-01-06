@@ -1,4 +1,4 @@
-# Project Implementation Plan & Summary
+# Temenos - Implementation Plan & Summary
 
 ## ✅ Completed Components
 
@@ -40,7 +40,7 @@
   - Multi-format report generation
 
 ### 4. CLI Application
-- ✅ **Main CLI** (`attack_surface_mapper.py`)
+- ✅ **Main CLI** (`temenos.py`)
   - `scan` command with full options
   - `check-config` command for validation
   - Multiple output formats (JSON, CSV, table)
@@ -59,7 +59,7 @@
 
 ```
 /home/nick/temenos/
-├── attack_surface_mapper.py    # Main CLI entry point
+├── temenos.py                   # Main CLI entry point
 ├── example_usage.py             # Programmatic usage example
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Configuration template
@@ -90,12 +90,12 @@
 
 2. **Verify Configuration**
    ```bash
-   python attack_surface_mapper.py check-config
+   python temenos.py check-config
    ```
 
 3. **Run Your First Scan**
    ```bash
-   python attack_surface_mapper.py scan example.com
+   python temenos.py scan example.com
    ```
 
 ### API Key Registration
@@ -152,40 +152,40 @@
 
 ```bash
 # Simple domain scan
-python attack_surface_mapper.py scan example.com
+python temenos.py scan example.com
 
 # With VirusTotal enrichment
-python attack_surface_mapper.py scan example.com --virustotal
+python temenos.py scan example.com --virustotal
 
 # Verbose output
-python attack_surface_mapper.py scan example.com -v
+python temenos.py scan example.com -v
 
 # Check configuration
-python attack_surface_mapper.py check-config
+python temenos.py check-config
 ```
 
 ### Export Results
 
 ```bash
 # JSON format
-python attack_surface_mapper.py scan example.com -o report.json -f json
+python temenos.py scan example.com -o report.json -f json
 
 # CSV format
-python attack_surface_mapper.py scan example.com -o report.csv -f csv
+python temenos.py scan example.com -o report.csv -f csv
 
 # Table format to file
-python attack_surface_mapper.py scan example.com -o report.txt -f table
+python temenos.py scan example.com -o report.txt -f table
 ```
 
 ### Advanced Options
 
 ```bash
 # Limit VirusTotal checks to save API quota
-python attack_surface_mapper.py scan example.com --virustotal \
+python temenos.py scan example.com --virustotal \
   --max-vt-domains 3 --max-vt-ips 3
 
 # Full verbose scan with all features
-python attack_surface_mapper.py scan example.com \
+python temenos.py scan example.com \
   --virustotal --verbose -o full_report.json -f json
 ```
 
@@ -231,7 +231,7 @@ python attack_surface_mapper.py scan example.com \
 The modular design makes it easy to:
 - Add new API clients in `clients/`
 - Add new formatters in `utils/formatter.py`
-- Extend CLI commands in `attack_surface_mapper.py`
+- Extend CLI commands in `temenos.py`
 - Add custom analysis logic
 
 ## 📊 API Rate Limits & Best Practices
@@ -274,7 +274,7 @@ The modular design makes it easy to:
 1. **"API key not found"**
    - Ensure `.env` file exists in project root
    - Verify API keys are set correctly
-   - Run `python attack_surface_mapper.py check-config`
+   - Run `python temenos.py check-config`
 
 2. **Import errors**
    - Activate virtual environment: `source .venv/bin/activate`

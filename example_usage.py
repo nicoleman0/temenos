@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Example script demonstrating how to use the Attack Surface Mapper programmatically.
+Example script demonstrating how to use Temenos programmatically.
 """
 from utils.formatter import OutputFormatter
 from utils.config import Config
@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 
 def main():
-    """Example usage of the Attack Surface Mapper."""
+    """Example usage of Temenos."""
 
     # Load configuration
     config = Config()

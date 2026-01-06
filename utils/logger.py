@@ -1,4 +1,4 @@
-"""Logging utilities for Attack Surface Mapper."""
+"""Logging utilities for Temenos."""
 import logging
 import sys
 from colorama import Fore, Style, init
@@ -26,7 +26,7 @@ class ColoredFormatter(logging.Formatter):
         return super().format(record)
 
 
-def setup_logger(name='attack_surface_mapper', verbose=False):
+def setup_logger(name='temenos', verbose=False):
     """
     Set up a logger with colored output.
 

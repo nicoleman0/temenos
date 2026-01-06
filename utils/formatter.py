@@ -1,4 +1,4 @@
-"""Output formatting utilities for Attack Surface Mapper."""
+"""Output formatting utilities for Temenos."""
 import json
 import csv
 from datetime import datetime

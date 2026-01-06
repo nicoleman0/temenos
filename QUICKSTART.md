@@ -1,4 +1,4 @@
-# Quick Start Guide - Attack Surface Mapper
+# Quick Start Guide - Temenos
 
 ## Setup (5 minutes)
 
@@ -26,34 +26,34 @@ VIRUSTOTAL_API_KEY=your_actual_key_here
 
 ### 3. Verify Configuration
 ```bash
-python attack_surface_mapper.py check-config
+python temenos.py check-config
 ```
 
 ## Basic Usage
 
 ### Simple Domain Scan
 ```bash
-python attack_surface_mapper.py scan example.com
+python temenos.py scan example.com
 ```
 
 ### Scan with VirusTotal Threat Intelligence
 ```bash
-python attack_surface_mapper.py scan example.com --virustotal
+python temenos.py scan example.com --virustotal
 ```
 
 ### Export Results to JSON
 ```bash
-python attack_surface_mapper.py scan example.com -o report.json -f json
+python temenos.py scan example.com -o report.json -f json
 ```
 
 ### Export Results to CSV
 ```bash
-python attack_surface_mapper.py scan example.com -o report.csv -f csv
+python temenos.py scan example.com -o report.csv -f csv
 ```
 
 ### Verbose Output for Debugging
 ```bash
-python attack_surface_mapper.py scan example.com --verbose
+python temenos.py scan example.com --verbose
 ```
 
 ## What You'll Discover
@@ -71,29 +71,29 @@ The tool maps your attack surface by finding:
 
 ### Limit VirusTotal Checks (Save API quota)
 ```bash
-python attack_surface_mapper.py scan example.com --virustotal --max-vt-domains 3 --max-vt-ips 3
+python temenos.py scan example.com --virustotal --max-vt-domains 3 --max-vt-ips 3
 ```
 
 ### Full Command Options
 ```bash
-python attack_surface_mapper.py scan --help
+python temenos.py scan --help
 ```
 
 ## Typical Workflow
 
 1. **Reconnaissance**: Start with basic scan
    ```bash
-   python attack_surface_mapper.py scan target.com -v
+   python temenos.py scan target.com -v
    ```
 
 2. **Threat Assessment**: Add VirusTotal enrichment
    ```bash
-   python attack_surface_mapper.py scan target.com --virustotal
+   python temenos.py scan target.com --virustotal
    ```
 
 3. **Documentation**: Export results
    ```bash
-   python attack_surface_mapper.py scan target.com --virustotal -o report.json -f json
+   python temenos.py scan target.com --virustotal -o report.json -f json
    ```
 
 ## Troubleshooting
@@ -101,9 +101,9 @@ python attack_surface_mapper.py scan --help
 **"API key not found"**
 - Ensure `.env` file exists in project root
 - Check that API keys are set correctly
-- Run `python attack_surface_mapper.py check-config`
+- Run `python temenos.py check-config`
 
-**"Rate limit exceeded"**
+**"Rate limit exceeded"****
 - Wait 2 seconds between DNSDumpster requests
 - Wait 15 seconds between VirusTotal requests (free tier)
 - Tool handles this automatically, but manual retries need waiting
@@ -111,7 +111,7 @@ python attack_surface_mapper.py scan --help
 **No results found**
 - Verify the domain name is correct
 - Check if domain exists: `nslookup example.com`
-- Try with a well-known domain first: `python attack_surface_mapper.py scan google.com`
+- Try with a well-known domain first: `python temenos.py scan google.com`
 
 ## API Limits Reference
 

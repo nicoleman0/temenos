@@ -1,1 +1,1 @@
-"""API client modules for Attack Surface Mapper."""
+"""API client modules for Temenos."""

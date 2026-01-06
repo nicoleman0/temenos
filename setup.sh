@@ -1,8 +1,8 @@
 #!/bin/bash
-# Setup script for Attack Surface Mapper
+# Setup script for Temenos
 
 echo "================================="
-echo "Attack Surface Mapper - Setup"
+echo "Temenos - Setup"
 echo "================================="
 echo ""
 
@@ -63,7 +63,7 @@ else
 fi
 
 # Make scripts executable
-chmod +x attack_surface_mapper.py
+chmod +x temenos.py
 chmod +x example_usage.py
 
 echo ""
@@ -73,8 +73,8 @@ echo "================================="
 echo ""
 echo "Next steps:"
 echo "1. Edit .env file with your API keys"
-echo "2. Run: python attack_surface_mapper.py check-config"
-echo "3. Try a scan: python attack_surface_mapper.py scan example.com"
+echo "2. Run: python temenos.py check-config"
+echo "3. Try a scan: python temenos.py scan example.com"
 echo ""
 echo "See QUICKSTART.md for more information"
 echo ""

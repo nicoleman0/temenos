@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Attack Surface Mapper - CLI Tool
+Temenos - CLI Security Tool
 A lightweight, cross-platform security tool for mapping attack surfaces
 using DNSDumpster and VirusTotal APIs.
 """
@@ -19,10 +19,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 
 @click.group()
-@click.version_option(version='1.0.0', prog_name='Attack Surface Mapper')
+@click.version_option(version='1.0.0', prog_name='Temenos')
 def cli():
     """
-    Attack Surface Mapper - Map your organization's attack surface
+    Temenos - Map your organization's attack surface
 
     A lightweight CLI tool that uses DNSDumpster and VirusTotal APIs to
     discover and analyze domains, subdomains, IP addresses, and potential
@@ -58,19 +58,19 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
 
       \b
       # Basic scan with table output
-      python attack_surface_mapper.py scan example.com
+      python temenos.py scan example.com
 
       \b
       # Scan with VirusTotal enrichment
-      python attack_surface_mapper.py scan example.com --virustotal
+      python temenos.py scan example.com --virustotal
 
       \b
       # Export to JSON
-      python attack_surface_mapper.py scan example.com -o results.json -f json
+      python temenos.py scan example.com -o results.json -f json
 
       \b
       # Export to CSV
-      python attack_surface_mapper.py scan example.com -o results.csv -f csv
+      python temenos.py scan example.com -o results.csv -f csv
     """
     logger = setup_logger(verbose=verbose)
 
