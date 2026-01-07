@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/temenos-banner.png" alt="Temenos Banner" width="800"/>
+  <img src="assets/temenos-banner.png" alt="Temenos Banner" width="600"/>
 </div>
 
 # Temenos 👾
