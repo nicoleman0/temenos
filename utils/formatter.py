@@ -463,6 +463,145 @@ class OutputFormatter:
         )
 
     @staticmethod
+    def _escape_xml(text):
+        """Escape special XML characters."""
+        if text is None:
+            return ''
+        return html.escape(str(text))
+
+    @staticmethod
+    def _format_xml_a_records(data, escape_func):
+        """Format A records section for XML."""
+        lines = []
+        if data.get('a_records'):
+            lines.append('    <a_records>')
+            for record in data['a_records']:
+                lines.append('      <a_record>')
+                host_value = escape_func(record.get("host", ""))
+                lines.append(f'        <host>{host_value}</host>')
+                if record.get('ips'):
+                    lines.append('        <ip_addresses>')
+                    for ip_info in record['ips']:
+                        lines.append('          <ip_address>')
+                        ip_val = escape_func(ip_info.get("ip", ""))
+                        lines.append(f'            <ip>{ip_val}</ip>')
+                        country_val = escape_func(ip_info.get("country", ""))
+                        lines.append(
+                            f'            <country>{country_val}</country>')
+                        asn_val = escape_func(ip_info.get("asn", ""))
+                        lines.append(f'            <asn>{asn_val}</asn>')
+                        asn_name_val = escape_func(ip_info.get("asn_name", ""))
+                        lines.append(
+                            f'            <asn_name>{asn_name_val}</asn_name>')
+                        lines.append('          </ip_address>')
+                    lines.append('        </ip_addresses>')
+                lines.append('      </a_record>')
+            lines.append('    </a_records>')
+        return lines
+
+    @staticmethod
+    def _format_xml_nameservers(data, escape_func):
+        """Format nameservers section for XML."""
+        lines = []
+        if data.get('nameservers'):
+            lines.append('    <nameservers>')
+            for ns in data['nameservers']:
+                lines.append('      <nameserver>')
+                host_val = escape_func(ns.get("host", ""))
+                lines.append(f'        <host>{host_val}</host>')
+                if ns.get('ips'):
+                    lines.append('        <ip_addresses>')
+                    for ip_info in ns['ips']:
+                        lines.append('          <ip_address>')
+                        ip_val = escape_func(ip_info.get("ip", ""))
+                        lines.append(f'            <ip>{ip_val}</ip>')
+                        country_val = escape_func(ip_info.get("country", ""))
+                        lines.append(
+                            f'            <country>{country_val}</country>')
+                        lines.append('          </ip_address>')
+                    lines.append('        </ip_addresses>')
+                lines.append('      </nameserver>')
+            lines.append('    </nameservers>')
+        return lines
+
+    @staticmethod
+    def _format_xml_mx_records(data, escape_func):
+        """Format MX records section for XML."""
+        lines = []
+        if data.get('mx_records'):
+            lines.append('    <mx_records>')
+            for mx in data['mx_records']:
+                lines.append('      <mx_record>')
+                host_val = escape_func(mx.get("host", ""))
+                lines.append(f'        <host>{host_val}</host>')
+                if mx.get('ips'):
+                    lines.append('        <ip_addresses>')
+                    for ip_info in mx['ips']:
+                        lines.append('          <ip_address>')
+                        ip_val = escape_func(ip_info.get("ip", ""))
+                        lines.append(f'            <ip>{ip_val}</ip>')
+                        lines.append('          </ip_address>')
+                    lines.append('        </ip_addresses>')
+                lines.append('      </mx_record>')
+            lines.append('    </mx_records>')
+        return lines
+
+    @staticmethod
+    def _format_xml_cname_txt_records(data, escape_func):
+        """Format CNAME and TXT records sections for XML."""
+        lines = []
+        # CNAME Records
+        if data.get('cname_records'):
+            lines.append('    <cname_records>')
+            for cname in data['cname_records']:
+                lines.append('      <cname_record>')
+                host_val = escape_func(cname.get("host", ""))
+                lines.append(f'        <host>{host_val}</host>')
+                target_val = escape_func(cname.get("target", ""))
+                lines.append(f'        <target>{target_val}</target>')
+                lines.append('      </cname_record>')
+            lines.append('    </cname_records>')
+
+        # TXT Records
+        if data.get('txt_records'):
+            lines.append('    <txt_records>')
+            for txt in data['txt_records']:
+                txt_val = escape_func(txt)
+                lines.append(f'      <txt_record>{txt_val}</txt_record>')
+            lines.append('    </txt_records>')
+        return lines
+
+    @staticmethod
+    def _format_xml_virustotal_results(data, escape_func):
+        """Format VirusTotal results section for XML."""
+        lines = []
+        if data.get('virustotal_results'):
+            lines.append('  <virustotal_results>')
+            for vt in data['virustotal_results']:
+                lines.append('    <result>')
+                indicator_val = escape_func(vt.get("indicator", ""))
+                lines.append(f'      <indicator>{indicator_val}</indicator>')
+                type_val = escape_func(vt.get("type", ""))
+                lines.append(f'      <type>{type_val}</type>')
+                if vt.get('stats'):
+                    stats = vt['stats']
+                    lines.append('      <statistics>')
+                    mal_count = stats.get("malicious", 0)
+                    lines.append(f'        <malicious>{mal_count}</malicious>')
+                    sus_count = stats.get("suspicious", 0)
+                    lines.append(
+                        f'        <suspicious>{sus_count}</suspicious>')
+                    harm_count = stats.get("harmless", 0)
+                    lines.append(f'        <harmless>{harm_count}</harmless>')
+                    undet_count = stats.get("undetected", 0)
+                    lines.append(
+                        f'        <undetected>{undet_count}</undetected>')
+                    lines.append('      </statistics>')
+                lines.append('    </result>')
+            lines.append('  </virustotal_results>')
+        return lines
+
+    @staticmethod
     def format_xml(data):
         """
         Format data as XML.
@@ -473,18 +612,14 @@ class OutputFormatter:
         Returns:
             XML string with proper schema
         """
-        def escape_xml(text):
-            """Escape special XML characters."""
-            if text is None:
-                return ''
-            return html.escape(str(text))
+        escape_func = OutputFormatter._escape_xml
 
         lines = ['<?xml version="1.0" encoding="UTF-8"?>']
         lines.append('<temenos_scan>')
         lines.append('  <metadata>')
-        domain_value = escape_xml(data.get("domain", "Unknown"))
+        domain_value = escape_func(data.get("domain", "Unknown"))
         lines.append(f'    <domain>{domain_value}</domain>')
-        timestamp_value = escape_xml(
+        timestamp_value = escape_func(
             data.get("timestamp", datetime.now().isoformat())
         )
         lines.append(f'    <timestamp>{timestamp_value}</timestamp>')
@@ -494,117 +629,19 @@ class OutputFormatter:
         # A Records
         if data.get('a_records'):
             lines.append('  <dns_records>')
-            lines.append('    <a_records>')
-            for record in data['a_records']:
-                lines.append('      <a_record>')
-                host_value = escape_xml(record.get("host", ""))
-                lines.append(f'        <host>{host_value}</host>')
-                if record.get('ips'):
-                    lines.append('        <ip_addresses>')
-                    for ip_info in record['ips']:
-                        lines.append('          <ip_address>')
-                        ip_val = escape_xml(ip_info.get("ip", ""))
-                        lines.append(f'            <ip>{ip_val}</ip>')
-                        country_val = escape_xml(ip_info.get("country", ""))
-                        lines.append(f'            <country>{country_val}</country>')
-                        asn_val = escape_xml(ip_info.get("asn", ""))
-                        lines.append(f'            <asn>{asn_val}</asn>')
-                        asn_name_val = escape_xml(ip_info.get("asn_name", ""))
-                        lines.append(f'            <asn_name>{asn_name_val}</asn_name>')
-                        lines.append('          </ip_address>')
-                    lines.append('        </ip_addresses>')
-                lines.append('      </a_record>')
-            lines.append('    </a_records>')
-
-            # Nameservers
-            if data.get('nameservers'):
-                lines.append('    <nameservers>')
-                for ns in data['nameservers']:
-                    lines.append('      <nameserver>')
-                    host_val = escape_xml(ns.get("host", ""))
-                    lines.append(f'        <host>{host_val}</host>')
-                    if ns.get('ips'):
-                        lines.append('        <ip_addresses>')
-                        for ip_info in ns['ips']:
-                            lines.append('          <ip_address>')
-                            ip_val = escape_xml(ip_info.get("ip", ""))
-                            lines.append(f'            <ip>{ip_val}</ip>')
-                            country_val = escape_xml(
-                                ip_info.get("country", "")
-                            )
-                            lines.append(
-                                f'            <country>{country_val}</country>'
-                            )
-                            lines.append('          </ip_address>')
-                        lines.append('        </ip_addresses>')
-                    lines.append('      </nameserver>')
-                lines.append('    </nameservers>')
-
-            # MX Records
-            if data.get('mx_records'):
-                lines.append('    <mx_records>')
-                for mx in data['mx_records']:
-                    lines.append('      <mx_record>')
-                    host_val = escape_xml(mx.get("host", ""))
-                    lines.append(f'        <host>{host_val}</host>')
-                    if mx.get('ips'):
-                        lines.append('        <ip_addresses>')
-                        for ip_info in mx['ips']:
-                            lines.append('          <ip_address>')
-                            ip_val = escape_xml(ip_info.get("ip", ""))
-                            lines.append(f'            <ip>{ip_val}</ip>')
-                            lines.append('          </ip_address>')
-                        lines.append('        </ip_addresses>')
-                    lines.append('      </mx_record>')
-                lines.append('    </mx_records>')
-
-            # CNAME Records
-            if data.get('cname_records'):
-                lines.append('    <cname_records>')
-                for cname in data['cname_records']:
-                    lines.append('      <cname_record>')
-                    host_val = escape_xml(cname.get("host", ""))
-                    lines.append(f'        <host>{host_val}</host>')
-                    target_val = escape_xml(cname.get("target", ""))
-                    lines.append(f'        <target>{target_val}</target>')
-                    lines.append('      </cname_record>')
-                lines.append('    </cname_records>')
-
-            # TXT Records
-            if data.get('txt_records'):
-                lines.append('    <txt_records>')
-                for txt in data['txt_records']:
-                    txt_val = escape_xml(txt)
-                    lines.append(f'      <txt_record>{txt_val}</txt_record>')
-                lines.append('    </txt_records>')
-
+            lines.extend(
+                OutputFormatter._format_xml_a_records(data, escape_func))
+            lines.extend(
+                OutputFormatter._format_xml_nameservers(data, escape_func))
+            lines.extend(
+                OutputFormatter._format_xml_mx_records(data, escape_func))
+            lines.extend(
+                OutputFormatter._format_xml_cname_txt_records(data, escape_func))
             lines.append('  </dns_records>')
 
         # VirusTotal Results
-        if data.get('virustotal_results'):
-            lines.append('  <virustotal_results>')
-            for vt in data['virustotal_results']:
-                lines.append('    <result>')
-                indicator_val = escape_xml(vt.get("indicator", ""))
-                lines.append(f'      <indicator>{indicator_val}</indicator>')
-                type_val = escape_xml(vt.get("type", ""))
-                lines.append(f'      <type>{type_val}</type>')
-                if vt.get('stats'):
-                    stats = vt['stats']
-                    lines.append('      <statistics>')
-                    mal_count = stats.get("malicious", 0)
-                    lines.append(f'        <malicious>{mal_count}</malicious>')
-                    sus_count = stats.get("suspicious", 0)
-                    lines.append(f'        <suspicious>{sus_count}</suspicious>')
-                    harm_count = stats.get("harmless", 0)
-                    lines.append(f'        <harmless>{harm_count}</harmless>')
-                    undet_count = stats.get("undetected", 0)
-                    lines.append(
-                        f'        <undetected>{undet_count}</undetected>'
-                    )
-                    lines.append('      </statistics>')
-                lines.append('    </result>')
-            lines.append('  </virustotal_results>')
+        lines.extend(
+            OutputFormatter._format_xml_virustotal_results(data, escape_func))
 
         # Summary
         lines.append('  <summary>')
@@ -616,8 +653,7 @@ class OutputFormatter:
         lines.append(f'    <total_mx_records>{total_mx}</total_mx_records>')
         total_cname = len(data.get("cname_records", []))
         lines.append(
-            f'    <total_cname_records>{total_cname}</total_cname_records>'
-        )
+            f'    <total_cname_records>{total_cname}</total_cname_records>')
         total_txt = len(data.get("txt_records", []))
         lines.append(f'    <total_txt_records>{total_txt}</total_txt_records>')
         lines.append('  </summary>')
@@ -626,21 +662,12 @@ class OutputFormatter:
         return '\n'.join(lines)
 
     @staticmethod
-    def format_markdown(data):
-        """
-        Format data as Markdown document.
-
-        Args:
-            data: Dictionary containing scan results
-
-        Returns:
-            Markdown string compatible with GitHub/GitLab
-        """
+    def _format_markdown_header(data):
+        """Format header section for Markdown."""
         lines = []
         domain = data.get('domain', 'Unknown')
         timestamp = data.get('timestamp', datetime.now().isoformat())
 
-        # Header
         lines.append("# 🛡️ Temenos Security Report")
         lines.append("")
         lines.append(f"**Domain:** `{domain}`  ")
@@ -649,8 +676,12 @@ class OutputFormatter:
         lines.append("")
         lines.append("---")
         lines.append("")
+        return lines
 
-        # A Records
+    @staticmethod
+    def _format_markdown_a_records(data):
+        """Format A records section for Markdown."""
+        lines = []
         if data.get('a_records'):
             lines.append("## 📍 A Records (IPv4 Addresses)")
             lines.append("")
@@ -663,11 +694,15 @@ class OutputFormatter:
                     country = ip_info.get('country', '')
                     asn = ip_info.get('asn', '')
                     asn_name = ip_info.get('asn_name', '')
-                    line = f"| `{host}` | `{ip}` | {country} | {asn} "
-                    line += f"| {asn_name} |"
+                    line = f"| `{host}` | `{ip}` | {country} | {asn} | {asn_name} |"
                     lines.append(line)
             lines.append("")
+        return lines
 
+    @staticmethod
+    def _format_markdown_nameservers_mx(data):
+        """Format nameservers and MX records sections for Markdown."""
+        lines = []
         # Nameservers
         if data.get('nameservers'):
             lines.append("## 🌐 Nameservers")
@@ -689,7 +724,12 @@ class OutputFormatter:
                 for ip_info in mx.get('ips', []):
                     lines.append(f"  - `{ip_info.get('ip', '')}`")
             lines.append("")
+        return lines
 
+    @staticmethod
+    def _format_markdown_cname_txt(data):
+        """Format CNAME and TXT records sections for Markdown."""
+        lines = []
         # CNAME Records
         if data.get('cname_records'):
             lines.append("## 🔗 CNAME Records")
@@ -711,13 +751,19 @@ class OutputFormatter:
                 else:
                     lines.append(f"- `{txt}`")
             lines.append("")
+        return lines
 
-        # VirusTotal Results
+    @staticmethod
+    def _format_markdown_virustotal(data):
+        """Format VirusTotal results section for Markdown."""
+        lines = []
         if data.get('virustotal_results'):
             lines.append("## 🔍 VirusTotal Threat Intelligence")
             lines.append("")
-            lines.append("| Indicator | Type | Status | Malicious | Suspicious |")
-            lines.append("|-----------|------|--------|-----------|------------|")
+            lines.append(
+                "| Indicator | Type | Status | Malicious | Suspicious |")
+            lines.append(
+                "|-----------|------|--------|-----------|------------|")
             for vt in data['virustotal_results']:
                 indicator = vt.get('indicator', '')
                 vt_type = vt.get('type', '')
@@ -732,21 +778,27 @@ class OutputFormatter:
                 else:
                     status = "🟢 Clean"
 
-                line = f"| `{indicator}` | {vt_type} | {status} | "
-                line += f"{malicious} | {suspicious} |"
+                line = f"| `{indicator}` | {vt_type} | {status} | {malicious} | {suspicious} |"
                 lines.append(line)
             lines.append("")
+        return lines
 
-        # Summary
+    @staticmethod
+    def _format_markdown_summary(data):
+        """Format summary section for Markdown."""
+        lines = []
         lines.append("---")
         lines.append("")
         lines.append("## 📊 Summary")
         lines.append("")
-        lines.append(f"- **Total A Records:** {data.get('total_a_records', 0)}")
+        lines.append(
+            f"- **Total A Records:** {data.get('total_a_records', 0)}")
         lines.append(f"- **Nameservers:** {len(data.get('nameservers', []))}")
         lines.append(f"- **MX Records:** {len(data.get('mx_records', []))}")
-        lines.append(f"- **CNAME Records:** {len(data.get('cname_records', []))}")
+        lines.append(
+            f"- **CNAME Records:** {len(data.get('cname_records', []))}")
         lines.append(f"- **TXT Records:** {len(data.get('txt_records', []))}")
+
         if data.get('virustotal_results'):
             vt_count = len(data['virustotal_results'])
             lines.append(f"- **VirusTotal Checks:** {vt_count}")
@@ -764,17 +816,37 @@ class OutputFormatter:
 
             if malicious_count > 0:
                 lines.append(
-                    f"- **⚠️ Malicious Indicators:** {malicious_count}"
-                )
+                    f"- **⚠️ Malicious Indicators:** {malicious_count}")
             if suspicious_count > 0:
                 lines.append(
-                    f"- **⚠️ Suspicious Indicators:** {suspicious_count}"
-                )
+                    f"- **⚠️ Suspicious Indicators:** {suspicious_count}")
 
         lines.append("")
         lines.append("---")
         lines.append("")
         lines.append("*Generated by Temenos Security Scanner*")
         lines.append("")
+        return lines
+
+    @staticmethod
+    def format_markdown(data):
+        """
+        Format data as Markdown document.
+
+        Args:
+            data: Dictionary containing scan results
+
+        Returns:
+            Markdown string compatible with GitHub/GitLab
+        """
+        lines = []
+
+        # Build sections using helper methods
+        lines.extend(OutputFormatter._format_markdown_header(data))
+        lines.extend(OutputFormatter._format_markdown_a_records(data))
+        lines.extend(OutputFormatter._format_markdown_nameservers_mx(data))
+        lines.extend(OutputFormatter._format_markdown_cname_txt(data))
+        lines.extend(OutputFormatter._format_markdown_virustotal(data))
+        lines.extend(OutputFormatter._format_markdown_summary(data))
 
         return '\n'.join(lines)
