@@ -40,7 +40,7 @@ def cli():
 @click.option('--output', '-o', type=click.Path(),
               help='Output file path (optional)')
 @click.option('--format', '-f', 'output_format',
-              type=click.Choice(['json', 'csv', 'table'],
+              type=click.Choice(['json', 'csv', 'table', 'html', 'xml', 'markdown'],
                                 case_sensitive=False),
               default='table',
               help='Output format (default: table)')
@@ -73,6 +73,18 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
       \b
       # Export to CSV
       python temenos.py scan example.com -o results.csv -f csv
+
+      \b
+      # Export to HTML
+      python temenos.py scan example.com -o report.html -f html
+
+      \b
+      # Export to XML
+      python temenos.py scan example.com -o results.xml -f xml
+
+      \b
+      # Export to Markdown
+      python temenos.py scan example.com -o report.md -f markdown
     """
     logger = setup_logger(verbose=verbose)
 
@@ -170,6 +182,33 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
                 sys.exit(1)
             OutputFormatter.format_csv(results, output)
             logger.info("Results saved to: %s", output)
+
+        elif output_format == 'html':
+            formatted_output = OutputFormatter.format_html(results)
+            if output:
+                with open(output, 'w', encoding='utf-8') as f:
+                    f.write(formatted_output)
+                logger.info("Results saved to: %s", output)
+            else:
+                click.echo(formatted_output)
+
+        elif output_format == 'xml':
+            formatted_output = OutputFormatter.format_xml(results)
+            if output:
+                with open(output, 'w', encoding='utf-8') as f:
+                    f.write(formatted_output)
+                logger.info("Results saved to: %s", output)
+            else:
+                click.echo(formatted_output)
+
+        elif output_format == 'markdown':
+            formatted_output = OutputFormatter.format_markdown(results)
+            if output:
+                with open(output, 'w', encoding='utf-8') as f:
+                    f.write(formatted_output)
+                logger.info("Results saved to: %s", output)
+            else:
+                click.echo(formatted_output)
 
         else:  # table format
             formatted_output = OutputFormatter.format_table(results)
