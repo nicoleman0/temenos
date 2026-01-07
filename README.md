@@ -16,7 +16,7 @@ Temenos is a lightweight, cross-platform CLI security tool for mapping an organi
 
 - 🕵️‍♂️ **DNS Enumeration**: Discover subdomains, DNS records, and network infrastructure using DNSDumpster
 - 🛡️ **VT Threat Intelligence**: Enrich findings with VirusTotal reputation data
-- 📑 **Multiple Output Formats**: JSON, CSV, and formatted table output
+- 📑 **Multiple Output Formats**: JSON, CSV, HTML, XML, Markdown, and formatted table output
 - 💻 **Cross-Platform**: Works on Linux, macOS, and Windows
 - </> **Rate Limit Handling**: Automatic rate limit management for both APIs
 
@@ -72,6 +72,24 @@ python temenos.py scan example.com --output results.json --format json
 
 ```bash
 python temenos.py scan example.com --output results.csv --format csv
+```
+
+### Output to HTML Report
+
+```bash
+python temenos.py scan example.com --output report.html --format html
+```
+
+### Output to XML
+
+```bash
+python temenos.py scan example.com --output results.xml --format xml
+```
+
+### Output to Markdown
+
+```bash
+python temenos.py scan example.com --output report.md --format markdown
 ```
 
 ### Verbose Output
