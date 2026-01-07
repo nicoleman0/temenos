@@ -80,7 +80,7 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
         config.validate(require_dnsdumpster=True,
                         require_virustotal=virustotal)
 
-        logger.info(f"Starting attack surface scan for: {domain}")
+        logger.info(f"Starting Temeneos scan for: {domain}")
 
         # Initialize DNSDumpster client
         dns_client = DNSDumpsterClient(
