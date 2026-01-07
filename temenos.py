@@ -4,15 +4,18 @@ Temenos - CLI Security Tool
 A lightweight, cross-platform security tool for mapping attack surfaces
 using DNSDumpster and VirusTotal APIs.
 """
+import sys
+import traceback
+from datetime import datetime
+from pathlib import Path
+
+import click
+
 from utils.formatter import OutputFormatter
 from utils.logger import setup_logger
 from utils.config import Config
 from clients.virustotal import VirusTotalClient
 from clients.dnsdumpster import DNSDumpsterClient
-import sys
-import click
-from datetime import datetime
-from pathlib import Path
 
 # Add the project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -28,7 +31,6 @@ def cli():
     discover and analyze domains, subdomains, IP addresses, and potential
     security threats.
     """
-    pass
 
 
 @cli.command()
@@ -80,7 +82,7 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
         config.validate(require_dnsdumpster=True,
                         require_virustotal=virustotal)
 
-        logger.info(f"Starting Temeneos scan for: {domain}")
+        logger.info("Starting Temeneos scan for: %s", domain)
 
         # Initialize DNSDumpster client
         dns_client = DNSDumpsterClient(
@@ -93,7 +95,7 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
         raw_data = dns_client.get_domain_info(domain)
         parsed_data = dns_client.parse_results(raw_data)
 
-        logger.info(f"Found {parsed_data['total_a_records']} A record(s)")
+        logger.info("Found %d A record(s)", parsed_data['total_a_records'])
 
         # Prepare results
         results = {
@@ -143,10 +145,10 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
 
                 if malicious_count > 0:
                     logger.warning(
-                        f"⚠️  Found {malicious_count} indicator(s) flagged as malicious")
+                        "⚠️  Found %d indicator(s) flagged as malicious", malicious_count)
                 if suspicious_count > 0:
                     logger.warning(
-                        f"⚠️  Found {suspicious_count} indicator(s) flagged as suspicious")
+                        "⚠️  Found %d indicator(s) flagged as suspicious", suspicious_count)
 
                 if malicious_count == 0 and suspicious_count == 0:
                     logger.info("✓ No threats detected by VirusTotal")
@@ -155,9 +157,9 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
         if output_format == 'json':
             formatted_output = OutputFormatter.format_json(results)
             if output:
-                with open(output, 'w') as f:
+                with open(output, 'w', encoding='utf-8') as f:
                     f.write(formatted_output)
-                logger.info(f"Results saved to: {output}")
+                logger.info("Results saved to: %s", output)
             else:
                 click.echo(formatted_output)
 
@@ -166,21 +168,21 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
                 logger.error("CSV format requires --output option")
                 sys.exit(1)
             OutputFormatter.format_csv(results, output)
-            logger.info(f"Results saved to: {output}")
+            logger.info("Results saved to: %s", output)
 
         else:  # table format
             formatted_output = OutputFormatter.format_table(results)
             if output:
-                with open(output, 'w') as f:
+                with open(output, 'w', encoding='utf-8') as f:
                     f.write(formatted_output)
-                logger.info(f"Results saved to: {output}")
+                logger.info("Results saved to: %s", output)
             else:
                 click.echo(formatted_output)
 
         logger.info("Scan completed successfully!")
 
     except ValueError as e:
-        logger.error(f"Error: {e}")
+        logger.error("Error: %s", e)
         sys.exit(1)
 
     except KeyboardInterrupt:
@@ -188,9 +190,8 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
         sys.exit(130)
 
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+        logger.error("Unexpected error: %s", e)
         if verbose:
-            import traceback
             traceback.print_exc()
         sys.exit(1)
 
@@ -202,8 +203,6 @@ def check_config():
 
     Validates that API keys are properly configured and accessible.
     """
-    logger = setup_logger()
-
     click.echo("Checking configuration...\n")
 
     config = Config()

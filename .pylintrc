@@ -1,0 +1,17 @@
+[MASTER]
+# Disable import-error since dependencies may not be installed in CI
+disable=import-error
+
+[MESSAGES CONTROL]
+# Disable duplicate-code check as it's triggering on common patterns
+disable=duplicate-code
+
+[DESIGN]
+# Increase thresholds for complexity checks to accommodate existing code
+max-args=7
+max-locals=23
+max-branches=18
+max-statements=68
+
+[FORMAT]
+max-line-length=100

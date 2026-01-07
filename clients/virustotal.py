@@ -1,8 +1,9 @@
 """VirusTotal API client."""
-import time
-import requests
 import logging
+import time
 from typing import Dict, List, Optional
+
+import requests
 
 logger = logging.getLogger('temenos')
 
@@ -37,7 +38,7 @@ class VirusTotalClient:
         if time_since_last < self.rate_limit:
             sleep_time = self.rate_limit - time_since_last
             logger.info(
-                f"Rate limit: waiting {sleep_time:.1f}s before next request...")
+                "Rate limit: waiting %.1fs before next request...", sleep_time)
             time.sleep(sleep_time)
 
         self.last_request_time = time.time()
@@ -67,21 +68,20 @@ class VirusTotalClient:
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 raise ValueError(
-                    "VirusTotal rate limit exceeded. Please wait before retrying.")
-            elif e.response.status_code == 401:
-                raise ValueError("Invalid VirusTotal API key.")
-            elif e.response.status_code == 404:
+                    "VirusTotal rate limit exceeded. Please wait before retrying.") from e
+            if e.response.status_code == 401:
+                raise ValueError("Invalid VirusTotal API key.") from e
+            if e.response.status_code == 404:
                 # Resource not found is not necessarily an error
                 return {'data': None, 'error': 'not_found'}
-            else:
-                raise ValueError(
-                    f"VirusTotal API error {e.response.status_code}: {e.response.text}")
+            raise ValueError(
+                f"VirusTotal API error {e.response.status_code}: {e.response.text}") from e
 
-        except requests.exceptions.Timeout:
-            raise ValueError("VirusTotal request timed out.")
+        except requests.exceptions.Timeout as exc:
+            raise ValueError("VirusTotal request timed out.") from exc
 
         except requests.exceptions.RequestException as e:
-            raise ValueError(f"VirusTotal request failed: {str(e)}")
+            raise ValueError(f"VirusTotal request failed: {str(e)}") from e
 
     def get_domain_report(self, domain: str) -> Optional[Dict]:
         """
@@ -211,18 +211,19 @@ class VirusTotalClient:
         current_check = 0
 
         # Check domains (limited to avoid rate limits)
-        for i, domain in enumerate(domains[:max_domains], 1):
+        for domain in domains[:max_domains]:
             current_check += 1
             logger.info(
-                f"[{current_check}/{total_checks}] Checking domain: {domain}")
+                "[%d/%d] Checking domain: %s", current_check, total_checks, domain)
             report = self.get_domain_report(domain)
             if report and not report.get('error'):
                 results.append(report)
 
         # Check IPs (limited to avoid rate limits)
-        for i, ip in enumerate(ips[:max_ips], 1):
+        for ip in ips[:max_ips]:
             current_check += 1
-            logger.info(f"[{current_check}/{total_checks}] Checking IP: {ip}")
+            logger.info("[%d/%d] Checking IP: %s",
+                        current_check, total_checks, ip)
             report = self.get_ip_report(ip)
             if report and not report.get('error'):
                 results.append(report)

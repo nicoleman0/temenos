@@ -1,7 +1,8 @@
 """DNSDumpster API client."""
 import time
+from typing import Dict
+
 import requests
-from typing import Dict, Optional
 
 
 class DNSDumpsterClient:
@@ -79,26 +80,25 @@ class DNSDumpsterClient:
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 raise ValueError(
-                    "Rate limit exceeded. Please wait before making another request.")
-            elif e.response.status_code == 401:
+                    "Rate limit exceeded. Please wait before making another request.") from e
+            if e.response.status_code == 401:
                 raise ValueError(
-                    "Invalid API key. Please check your DNSDumpster API key.")
-            elif e.response.status_code == 403:
+                    "Invalid API key. Please check your DNSDumpster API key.") from e
+            if e.response.status_code == 403:
                 raise ValueError(
-                    "Access forbidden. Check your API key and membership level.")
-            else:
-                raise ValueError(
-                    f"HTTP Error {e.response.status_code}: {e.response.text}")
+                    "Access forbidden. Check your API key and membership level.") from e
+            raise ValueError(
+                f"HTTP Error {e.response.status_code}: {e.response.text}") from e
 
-        except requests.exceptions.Timeout:
-            raise ValueError("Request timed out. Please try again.")
+        except requests.exceptions.Timeout as exc:
+            raise ValueError("Request timed out. Please try again.") from exc
 
         except requests.exceptions.RequestException as e:
-            raise ValueError(f"Request failed: {str(e)}")
+            raise ValueError(f"Request failed: {str(e)}") from e
 
         except ValueError as e:
             if "JSON" in str(e):
-                raise ValueError("Invalid JSON response from API")
+                raise ValueError("Invalid JSON response from API") from e
             raise
 
     def parse_results(self, data: Dict) -> Dict:

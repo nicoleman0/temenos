@@ -2,12 +2,13 @@
 """
 Example script demonstrating how to use Temenos programmatically.
 """
+import sys
+from pathlib import Path
+
 from utils.formatter import OutputFormatter
 from utils.config import Config
 from clients.virustotal import VirusTotalClient
 from clients.dnsdumpster import DNSDumpsterClient
-import sys
-from pathlib import Path
 
 # Add the project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))
