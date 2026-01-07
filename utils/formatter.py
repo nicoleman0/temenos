@@ -477,9 +477,13 @@ class OutputFormatter:
         lines = ['<?xml version="1.0" encoding="UTF-8"?>']
         lines.append('<temenos_scan>')
         lines.append('  <metadata>')
-        lines.append(f'    <domain>{escape_xml(data.get("domain", "Unknown"))}</domain>')
-        lines.append(f'    <timestamp>{escape_xml(data.get("timestamp", datetime.now().isoformat()))}</timestamp>')
-        lines.append(f'    <tool_version>1.0.0</tool_version>')
+        domain_value = escape_xml(data.get("domain", "Unknown"))
+        lines.append(f'    <domain>{domain_value}</domain>')
+        timestamp_value = escape_xml(
+            data.get("timestamp", datetime.now().isoformat())
+        )
+        lines.append(f'    <timestamp>{timestamp_value}</timestamp>')
+        lines.append('    <tool_version>1.0.0</tool_version>')
         lines.append('  </metadata>')
 
         # A Records
@@ -488,15 +492,20 @@ class OutputFormatter:
             lines.append('    <a_records>')
             for record in data['a_records']:
                 lines.append('      <a_record>')
-                lines.append(f'        <host>{escape_xml(record.get("host", ""))}</host>')
+                host_value = escape_xml(record.get("host", ""))
+                lines.append(f'        <host>{host_value}</host>')
                 if record.get('ips'):
                     lines.append('        <ip_addresses>')
                     for ip_info in record['ips']:
                         lines.append('          <ip_address>')
-                        lines.append(f'            <ip>{escape_xml(ip_info.get("ip", ""))}</ip>')
-                        lines.append(f'            <country>{escape_xml(ip_info.get("country", ""))}</country>')
-                        lines.append(f'            <asn>{escape_xml(ip_info.get("asn", ""))}</asn>')
-                        lines.append(f'            <asn_name>{escape_xml(ip_info.get("asn_name", ""))}</asn_name>')
+                        ip_val = escape_xml(ip_info.get("ip", ""))
+                        lines.append(f'            <ip>{ip_val}</ip>')
+                        country_val = escape_xml(ip_info.get("country", ""))
+                        lines.append(f'            <country>{country_val}</country>')
+                        asn_val = escape_xml(ip_info.get("asn", ""))
+                        lines.append(f'            <asn>{asn_val}</asn>')
+                        asn_name_val = escape_xml(ip_info.get("asn_name", ""))
+                        lines.append(f'            <asn_name>{asn_name_val}</asn_name>')
                         lines.append('          </ip_address>')
                     lines.append('        </ip_addresses>')
                 lines.append('      </a_record>')
@@ -507,13 +516,20 @@ class OutputFormatter:
                 lines.append('    <nameservers>')
                 for ns in data['nameservers']:
                     lines.append('      <nameserver>')
-                    lines.append(f'        <host>{escape_xml(ns.get("host", ""))}</host>')
+                    host_val = escape_xml(ns.get("host", ""))
+                    lines.append(f'        <host>{host_val}</host>')
                     if ns.get('ips'):
                         lines.append('        <ip_addresses>')
                         for ip_info in ns['ips']:
                             lines.append('          <ip_address>')
-                            lines.append(f'            <ip>{escape_xml(ip_info.get("ip", ""))}</ip>')
-                            lines.append(f'            <country>{escape_xml(ip_info.get("country", ""))}</country>')
+                            ip_val = escape_xml(ip_info.get("ip", ""))
+                            lines.append(f'            <ip>{ip_val}</ip>')
+                            country_val = escape_xml(
+                                ip_info.get("country", "")
+                            )
+                            lines.append(
+                                f'            <country>{country_val}</country>'
+                            )
                             lines.append('          </ip_address>')
                         lines.append('        </ip_addresses>')
                     lines.append('      </nameserver>')
@@ -524,12 +540,14 @@ class OutputFormatter:
                 lines.append('    <mx_records>')
                 for mx in data['mx_records']:
                     lines.append('      <mx_record>')
-                    lines.append(f'        <host>{escape_xml(mx.get("host", ""))}</host>')
+                    host_val = escape_xml(mx.get("host", ""))
+                    lines.append(f'        <host>{host_val}</host>')
                     if mx.get('ips'):
                         lines.append('        <ip_addresses>')
                         for ip_info in mx['ips']:
                             lines.append('          <ip_address>')
-                            lines.append(f'            <ip>{escape_xml(ip_info.get("ip", ""))}</ip>')
+                            ip_val = escape_xml(ip_info.get("ip", ""))
+                            lines.append(f'            <ip>{ip_val}</ip>')
                             lines.append('          </ip_address>')
                         lines.append('        </ip_addresses>')
                     lines.append('      </mx_record>')
@@ -540,8 +558,10 @@ class OutputFormatter:
                 lines.append('    <cname_records>')
                 for cname in data['cname_records']:
                     lines.append('      <cname_record>')
-                    lines.append(f'        <host>{escape_xml(cname.get("host", ""))}</host>')
-                    lines.append(f'        <target>{escape_xml(cname.get("target", ""))}</target>')
+                    host_val = escape_xml(cname.get("host", ""))
+                    lines.append(f'        <host>{host_val}</host>')
+                    target_val = escape_xml(cname.get("target", ""))
+                    lines.append(f'        <target>{target_val}</target>')
                     lines.append('      </cname_record>')
                 lines.append('    </cname_records>')
 
@@ -549,7 +569,8 @@ class OutputFormatter:
             if data.get('txt_records'):
                 lines.append('    <txt_records>')
                 for txt in data['txt_records']:
-                    lines.append(f'      <txt_record>{escape_xml(txt)}</txt_record>')
+                    txt_val = escape_xml(txt)
+                    lines.append(f'      <txt_record>{txt_val}</txt_record>')
                 lines.append('    </txt_records>')
 
             lines.append('  </dns_records>')
@@ -559,26 +580,41 @@ class OutputFormatter:
             lines.append('  <virustotal_results>')
             for vt in data['virustotal_results']:
                 lines.append('    <result>')
-                lines.append(f'      <indicator>{escape_xml(vt.get("indicator", ""))}</indicator>')
-                lines.append(f'      <type>{escape_xml(vt.get("type", ""))}</type>')
+                indicator_val = escape_xml(vt.get("indicator", ""))
+                lines.append(f'      <indicator>{indicator_val}</indicator>')
+                type_val = escape_xml(vt.get("type", ""))
+                lines.append(f'      <type>{type_val}</type>')
                 if vt.get('stats'):
                     stats = vt['stats']
                     lines.append('      <statistics>')
-                    lines.append(f'        <malicious>{stats.get("malicious", 0)}</malicious>')
-                    lines.append(f'        <suspicious>{stats.get("suspicious", 0)}</suspicious>')
-                    lines.append(f'        <harmless>{stats.get("harmless", 0)}</harmless>')
-                    lines.append(f'        <undetected>{stats.get("undetected", 0)}</undetected>')
+                    mal_count = stats.get("malicious", 0)
+                    lines.append(f'        <malicious>{mal_count}</malicious>')
+                    sus_count = stats.get("suspicious", 0)
+                    lines.append(f'        <suspicious>{sus_count}</suspicious>')
+                    harm_count = stats.get("harmless", 0)
+                    lines.append(f'        <harmless>{harm_count}</harmless>')
+                    undet_count = stats.get("undetected", 0)
+                    lines.append(
+                        f'        <undetected>{undet_count}</undetected>'
+                    )
                     lines.append('      </statistics>')
                 lines.append('    </result>')
             lines.append('  </virustotal_results>')
 
         # Summary
         lines.append('  <summary>')
-        lines.append(f'    <total_a_records>{data.get("total_a_records", 0)}</total_a_records>')
-        lines.append(f'    <total_nameservers>{len(data.get("nameservers", []))}</total_nameservers>')
-        lines.append(f'    <total_mx_records>{len(data.get("mx_records", []))}</total_mx_records>')
-        lines.append(f'    <total_cname_records>{len(data.get("cname_records", []))}</total_cname_records>')
-        lines.append(f'    <total_txt_records>{len(data.get("txt_records", []))}</total_txt_records>')
+        total_a = data.get("total_a_records", 0)
+        lines.append(f'    <total_a_records>{total_a}</total_a_records>')
+        total_ns = len(data.get("nameservers", []))
+        lines.append(f'    <total_nameservers>{total_ns}</total_nameservers>')
+        total_mx = len(data.get("mx_records", []))
+        lines.append(f'    <total_mx_records>{total_mx}</total_mx_records>')
+        total_cname = len(data.get("cname_records", []))
+        lines.append(
+            f'    <total_cname_records>{total_cname}</total_cname_records>'
+        )
+        total_txt = len(data.get("txt_records", []))
+        lines.append(f'    <total_txt_records>{total_txt}</total_txt_records>')
         lines.append('  </summary>')
 
         lines.append('</temenos_scan>')
@@ -600,7 +636,7 @@ class OutputFormatter:
         timestamp = data.get('timestamp', datetime.now().isoformat())
 
         # Header
-        lines.append(f"# 🛡️ Temenos Security Report")
+        lines.append("# 🛡️ Temenos Security Report")
         lines.append("")
         lines.append(f"**Domain:** `{domain}`  ")
         lines.append(f"**Scan Date:** {timestamp}  ")
@@ -622,7 +658,9 @@ class OutputFormatter:
                     country = ip_info.get('country', '')
                     asn = ip_info.get('asn', '')
                     asn_name = ip_info.get('asn_name', '')
-                    lines.append(f"| `{host}` | `{ip}` | {country} | {asn} | {asn_name} |")
+                    line = f"| `{host}` | `{ip}` | {country} | {asn} "
+                    line += f"| {asn_name} |"
+                    lines.append(line)
             lines.append("")
 
         # Nameservers
@@ -632,7 +670,9 @@ class OutputFormatter:
             for ns in data['nameservers']:
                 lines.append(f"- **{ns.get('host', '')}**")
                 for ip_info in ns.get('ips', []):
-                    lines.append(f"  - `{ip_info.get('ip', '')}` ({ip_info.get('country', '')})")
+                    ip_addr = ip_info.get('ip', '')
+                    country = ip_info.get('country', '')
+                    lines.append(f"  - `{ip_addr}` ({country})")
             lines.append("")
 
         # MX Records
@@ -650,7 +690,9 @@ class OutputFormatter:
             lines.append("## 🔗 CNAME Records")
             lines.append("")
             for cname in data['cname_records']:
-                lines.append(f"- `{cname.get('host', '')}` → `{cname.get('target', '')}`")
+                host = cname.get('host', '')
+                target = cname.get('target', '')
+                lines.append(f"- `{host}` → `{target}`")
             lines.append("")
 
         # TXT Records
@@ -685,7 +727,9 @@ class OutputFormatter:
                 else:
                     status = "🟢 Clean"
 
-                lines.append(f"| `{indicator}` | {vt_type} | {status} | {malicious} | {suspicious} |")
+                line = f"| `{indicator}` | {vt_type} | {status} | "
+                line += f"{malicious} | {suspicious} |"
+                lines.append(line)
             lines.append("")
 
         # Summary
@@ -699,18 +743,28 @@ class OutputFormatter:
         lines.append(f"- **CNAME Records:** {len(data.get('cname_records', []))}")
         lines.append(f"- **TXT Records:** {len(data.get('txt_records', []))}")
         if data.get('virustotal_results'):
-            lines.append(f"- **VirusTotal Checks:** {len(data['virustotal_results'])}")
+            vt_count = len(data['virustotal_results'])
+            lines.append(f"- **VirusTotal Checks:** {vt_count}")
 
             # Count threats
-            malicious_count = sum(1 for r in data['virustotal_results']
-                                  if r.get('stats', {}).get('malicious', 0) > 0)
-            suspicious_count = sum(1 for r in data['virustotal_results']
-                                   if r.get('stats', {}).get('suspicious', 0) > 0)
+            vt_results = data['virustotal_results']
+            malicious_count = sum(
+                1 for r in vt_results
+                if r.get('stats', {}).get('malicious', 0) > 0
+            )
+            suspicious_count = sum(
+                1 for r in vt_results
+                if r.get('stats', {}).get('suspicious', 0) > 0
+            )
 
             if malicious_count > 0:
-                lines.append(f"- **⚠️ Malicious Indicators:** {malicious_count}")
+                lines.append(
+                    f"- **⚠️ Malicious Indicators:** {malicious_count}"
+                )
             if suspicious_count > 0:
-                lines.append(f"- **⚠️ Suspicious Indicators:** {suspicious_count}")
+                lines.append(
+                    f"- **⚠️ Suspicious Indicators:** {suspicious_count}"
+                )
 
         lines.append("")
         lines.append("---")
