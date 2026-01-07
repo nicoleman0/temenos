@@ -3,8 +3,10 @@
 disable=import-error
 
 [MESSAGES CONTROL]
-# Disable duplicate-code check as it's triggering on common patterns
-disable=duplicate-code
+# Disable checks that are acceptable for CLI applications
+disable=duplicate-code,
+        too-many-positional-arguments,
+        broad-exception-caught
 
 [DESIGN]
 # Increase thresholds for complexity checks to accommodate existing code

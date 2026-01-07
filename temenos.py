@@ -125,8 +125,9 @@ def scan(domain, virustotal, output, output_format, verbose, max_vt_domains, max
                 domains = dns_client.get_all_domains(parsed_data)
                 ips = dns_client.get_all_ips(parsed_data)
 
-                logger.info(f"Checking {min(len(domains), max_vt_domains)} domain(s) and "
-                            f"{min(len(ips), max_vt_ips)} IP(s) with VirusTotal...")
+                logger.info("Checking %d domain(s) and %d IP(s) with VirusTotal...",
+                            min(len(domains), max_vt_domains),
+                            min(len(ips), max_vt_ips))
 
                 vt_results = vt_client.enrich_indicators(
                     domains=domains,
