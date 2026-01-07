@@ -1,7 +1,10 @@
 """VirusTotal API client."""
 import time
 import requests
+import logging
 from typing import Dict, List, Optional
+
+logger = logging.getLogger('temenos')
 
 
 class VirusTotalClient:
@@ -33,6 +36,8 @@ class VirusTotalClient:
 
         if time_since_last < self.rate_limit:
             sleep_time = self.rate_limit - time_since_last
+            logger.info(
+                f"Rate limit: waiting {sleep_time:.1f}s before next request...")
             time.sleep(sleep_time)
 
         self.last_request_time = time.time()
@@ -202,15 +207,22 @@ class VirusTotalClient:
             List of enriched indicator data
         """
         results = []
+        total_checks = min(len(domains), max_domains) + min(len(ips), max_ips)
+        current_check = 0
 
         # Check domains (limited to avoid rate limits)
-        for domain in domains[:max_domains]:
+        for i, domain in enumerate(domains[:max_domains], 1):
+            current_check += 1
+            logger.info(
+                f"[{current_check}/{total_checks}] Checking domain: {domain}")
             report = self.get_domain_report(domain)
             if report and not report.get('error'):
                 results.append(report)
 
         # Check IPs (limited to avoid rate limits)
-        for ip in ips[:max_ips]:
+        for i, ip in enumerate(ips[:max_ips], 1):
+            current_check += 1
+            logger.info(f"[{current_check}/{total_checks}] Checking IP: {ip}")
             report = self.get_ip_report(ip)
             if report and not report.get('error'):
                 results.append(report)
